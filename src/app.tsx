@@ -1,8 +1,7 @@
 import Routes from "@/routes";
-import { useEffect } from "react";
 import CoreToast from "@/components/core/core-toaster";
-import { useSessionStore } from "./stores/session-store";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SessionProvider } from "./providers/session-provider";
 
 // ----------------------------------------------------------------------
 
@@ -16,16 +15,12 @@ const queryClient = new QueryClient({
 });
 
 export function App() {
-    const { initialiseSession } = useSessionStore();
-
-    useEffect(() => {
-        initialiseSession();
-    }, [initialiseSession]);
-
     return (
         <QueryClientProvider client={queryClient}>
-            <CoreToast />
-            <Routes />
+            <SessionProvider>
+                <CoreToast />
+                <Routes />
+            </SessionProvider>
         </QueryClientProvider>
     );
 }

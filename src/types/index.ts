@@ -21,6 +21,9 @@ export type Game = {
     isDraw: boolean;
     xPlayer?: string;
     oPlayer?: string;
+    xWins: number;
+    oWins: number;
+    draws: number;
 }
 
 // --------------------------------------------------

@@ -53,4 +53,8 @@ export default class GameApiClient {
     async getGamesCount(): Promise<AxiosResponse> {
         return this.client.get('/all/count');
     }
+
+    async resetGame(gameName: string): Promise<AxiosResponse> {
+        return this.client.post(`/${gameName}/reset`);
+    }
 }

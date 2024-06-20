@@ -12,7 +12,8 @@ type Session = {
 type SessionState = {
     session: Session | null;
     resetSession: () => void;
-    initialiseSession: () => void;
+    initialiseSession: () => Promise<void>;
+    loading: boolean;
 };
 
 const createSession = (): Session => {
@@ -26,15 +27,16 @@ export const useSessionStore = create<SessionState>()(
     persist(
         (set, get) => ({
             session: null,
+            loading: true,
             resetSession: () => {
-                const newSession: Session = createSession();
-                set({ session: newSession });
+                const newSession = createSession();
                 ApiClient.setAuthorizationHeader(newSession.id);
+                set({ session: newSession, loading: false });
             },
-            initialiseSession: () => {
+            initialiseSession: async () => {
+                set({ loading: true });
                 const { session } = get();
                 let newSession: Session | null = null;
-
                 if (session) {
                     const currentTime = new Date().getTime();
                     const expiryTime = new Date(session.expiresAt).getTime();
@@ -50,8 +52,9 @@ export const useSessionStore = create<SessionState>()(
 
                 if (newSession) {
                     set({ session: newSession });
-                    ApiClient.setAuthorizationHeader(newSession.id);
+                    await ApiClient.setAuthorizationHeader(newSession.id);
                 }
+                set({ loading: false });
             },
         }),
         {

@@ -1,6 +1,8 @@
-import React, { memo } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import React, { memo, useState } from "react";
 import BoardCell from "./board-cell";
 import { Board as BoardType } from "@/types";
+import useIsMobile from "@/hooks/useIsMobile";
 
 // --------------------------------------------------------------
 
@@ -19,11 +21,34 @@ const Board: React.FC<Props> = ({
     handleCellClick,
     myTurn = true,
 }) => {
+    const { isMobile } = useIsMobile();
+    const [ignoreWarning, setIgnoreWarning] = useState(false);
+
+    // --------------------------------------------------------------
+
+    if (board.length > 10 && isMobile && !ignoreWarning) {
+        return (
+            <div className="text-center text-primary flex flex-col gap-2">
+                Board size is too large for mobile devices
+                <button
+                    className="btn btn-primary"
+                    onClick={() => setIgnoreWarning(true)}
+                >
+                    Continue anyway
+                </button>
+            </div>
+        );
+    }
+
+    // --------------------------------------------------------------
+
     return (
         <div
-            className={`grid gap-4 w-full h-full`}
+            className={`grid gap-4 w-full h-full 
+           
+            `}
             style={{
-                gridTemplateColumns: `repeat(${board?.[0]?.length}, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(${board.length}, minmax(0, 1fr))`,
             }}
         >
             {board.map((row, rowIndex) =>
@@ -33,15 +58,6 @@ const Board: React.FC<Props> = ({
                         cell={cell}
                         disabled={hasWinner || isDraw || !myTurn}
                         handleCellClick={handleCellClick}
-                        cellSize={
-                            board.length <= 5
-                                ? "2xl"
-                                : board.length <= 7
-                                ? "lg"
-                                : board.length <= 9
-                                ? "base"
-                                : "sm"
-                        }
                     />
                 ))
             )}

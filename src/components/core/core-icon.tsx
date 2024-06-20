@@ -4,6 +4,9 @@ import {
     GlobeHemisphereWest,
     WifiSlash,
     UserPlus,
+    User,
+    Circle,
+    X,
 } from "phosphor-react";
 
 interface CoreIconType {
@@ -15,6 +18,9 @@ const CoreIcon: CoreIconType = {
     GlobeHemisphereWest,
     WifiSlash,
     UserPlus,
+    User,
+    Circle,
+    X,
 };
 
 export default CoreIcon;

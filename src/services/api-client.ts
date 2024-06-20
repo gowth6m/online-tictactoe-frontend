@@ -1,13 +1,12 @@
 
 import axios from "axios";
 import GameApiClient from "./game-api-client";
+import { AppConfig } from "@/config/app-config";
 
 const APP_PASSWORD = "gowthaman" // TODO: Replace this method with JWT token from server
 
 const client = axios.create({
-    // baseURL: '/api',
-    // baseURL: 'http://localhost:8080',
-    baseURL: 'https://api-online-tictactoe.vercel.app',
+    baseURL: AppConfig.api.url,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -16,10 +15,13 @@ const client = axios.create({
 class ApiClient {
     static game = new GameApiClient(client, '/game');
 
-    static setAuthorizationHeader = (sessionId: string) => {
-        const credentials = `${sessionId}:${APP_PASSWORD}`;
-        const encodedCredentials = btoa(credentials);
-        client.defaults.headers.common['Authorization'] = `Basic ${encodedCredentials}`;
+    static setAuthorizationHeader = async (sessionId: string) => {
+        return new Promise<void>((resolve) => {
+            const credentials = `${sessionId}:${APP_PASSWORD}`;
+            const encodedCredentials = btoa(credentials);
+            client.defaults.headers.common['Authorization'] = `Basic ${encodedCredentials}`;
+            resolve();
+        });
     };
 }
 

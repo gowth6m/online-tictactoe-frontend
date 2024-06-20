@@ -5,6 +5,10 @@ import { immer } from "zustand/middleware/immer";
 import { createGameSchema } from "@/types/validation";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+// TODO:
+// - Implement scoring for local games
+// - Implement resetting the game
+
 // --------------------------------------------------
 
 const directions = [
@@ -170,6 +174,9 @@ export const useLocalGameStore = create<LocalGameState>()(
                         winningCondition: winningCondition,
                         winner: null,
                         isDraw: false,
+                        xWins: 0,
+                        oWins: 0,
+                        draws: 0,
                     },
                 });
             },
