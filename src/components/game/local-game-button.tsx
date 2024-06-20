@@ -38,6 +38,8 @@ const LocalGameButton = () => {
             handleClose();
             router.push("/local");
         } catch (error) {
+            // TODO: Handle error for zod validation
+
             toast.error("Failed to start new game");
         }
     };

@@ -5,9 +5,10 @@ import ApiClient from "@/services/api-client";
 import toast from "react-hot-toast";
 import LoadingTopbar from "../core/loading-topbar";
 import CoreToaster from "../core/core-toaster";
-import { ApiError } from "@/types/api";
+import { ApiError, ApiResponse } from "@/types/api";
 import { findError } from "@/utils/error";
 import { useRouter } from "@/routes/hooks";
+import { AxiosError } from "axios";
 
 // --------------------------------------------------------------
 
@@ -28,6 +29,13 @@ const NewOnlineGameButton = () => {
 
     const handleClose = useCallback(() => {
         ref.current?.close();
+        setForm({
+            gameName: "",
+            currentPlayer: "X",
+            boardSize: 3,
+            winningCondition: 3,
+        });
+        setErrorMap([]);
     }, [ref]);
 
     const handleStartNewGame = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,9 +55,8 @@ const NewOnlineGameButton = () => {
             handleClose();
             router.push(`/online/${form.gameName}`);
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
-            setErrorMap(error.response.data.errors);
+        onError: (error: AxiosError<ApiResponse<any>>) => {
+            setErrorMap(error?.response?.data?.errors ?? []);
             toast.error("Failed to start new game");
         },
     });
@@ -127,8 +134,26 @@ const NewOnlineGameButton = () => {
                                             boardSize: Number(e.target.value),
                                         })
                                     }
-                                    className="input input-primary"
+                                    className={`input input-primary ${
+                                        findError(errorMap, "boardSize")
+                                            ? "input-error"
+                                            : ""
+                                    }`}
                                 />
+                                <div className="label -mt-2">
+                                    {findError(errorMap, "boardSize") ? (
+                                        <span className="label-text-alt text-error">
+                                            {
+                                                findError(errorMap, "boardSize")
+                                                    ?.message
+                                            }
+                                        </span>
+                                    ) : (
+                                        <span className="label-text-alt text-opacity-50">
+                                            Size of the board (3-15)
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex flex-col gap-2">
@@ -147,12 +172,27 @@ const NewOnlineGameButton = () => {
                                     }
                                     min={3}
                                     max={form.boardSize}
-                                    className="input input-primary"
+                                    className={`input input-primary ${
+                                        findError(errorMap, "winningCondition")
+                                            ? "input-error"
+                                            : ""
+                                    }`}
                                 />
                                 <div className="label -mt-2">
-                                    <span className="label-text-alt text-opacity-50">
-                                        How many in a row to win?
-                                    </span>
+                                    {findError(errorMap, "winningCondition") ? (
+                                        <span className="label-text-alt text-error">
+                                            {
+                                                findError(
+                                                    errorMap,
+                                                    "winningCondition"
+                                                )?.message
+                                            }
+                                        </span>
+                                    ) : (
+                                        <span className="label-text-alt text-opacity-50">
+                                            How many in a row to win?
+                                        </span>
+                                    )}
                                 </div>
                             </div>
 

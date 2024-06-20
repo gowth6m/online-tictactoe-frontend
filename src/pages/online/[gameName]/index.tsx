@@ -245,7 +245,15 @@ export default function OnlineGameNameIndexPage() {
 
     if (getGame.isError || !getGame.data) {
         return (
-            <div className="text-2xl mx-auto text-center">Game not found!</div>
+            <div className="text-4xl mx-auto text-center my-24 flex flex-col justify-center gap-4 align-middle items-center">
+                <div>Game not found!</div>
+                <button
+                    className="btn btn-accent btn-wide"
+                    onClick={() => router.push("/")}
+                >
+                    Go back
+                </button>
+            </div>
         );
     }
 

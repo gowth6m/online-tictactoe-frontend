@@ -18,6 +18,14 @@ export const createGameSchema = z.object({
     currentPlayer: z.union([z.literal("X"), z.literal("O")]),
     boardSize: z.number().min(3).max(15),
     winningCondition: z.number().min(3).max(15),
+}).superRefine((data, ctx) => {
+    if (data.winningCondition > data.boardSize) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["winningCondition"],
+            message: "Winning condition must be less than or equal to the board size",
+        });
+    }
 });
 
 export const moveSchema = z.object({

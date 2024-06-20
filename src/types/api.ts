@@ -18,3 +18,9 @@ export type ApiError = {
     field: string;
     message: string;
 }
+
+export type ApiResponse<T> = {
+    message: string;
+    data: T;
+    errors: ApiError[];
+}
